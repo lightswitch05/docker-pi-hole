@@ -33,9 +33,9 @@ fi
 
 BASE_IMAGE="${DOCKER_HUB_REPO}/${DOCKER_HUB_IMAGE_NAME}"
 
-GIT_TAG="${GIT_TAG:-$GIT_BRANCH}"
-ARCH_IMAGE="${BASE_IMAGE}:${GIT_TAG}-${ARCH}-${DEBIAN_VERSION}"
-MULTIARCH_IMAGE="${BASE_IMAGE}:${GIT_TAG}"
+GIT_TAG_OR_BRANCH="${GIT_TAG:-$GIT_BRANCH}"
+ARCH_IMAGE="${BASE_IMAGE}:${GIT_TAG_OR_BRANCH}-${ARCH}-${DEBIAN_VERSION}"
+MULTIARCH_IMAGE="${BASE_IMAGE}:${GIT_TAG_OR_BRANCH}"
 
 
 
@@ -44,7 +44,7 @@ latest_tag='UNKNOWN'
 if ! latest_tag=$(curl -sI https://github.com/pi-hole/docker-pi-hole/releases/latest | grep --color=never -i Location: | awk -F / '{print $NF}' | tr -d '[:cntrl:]'); then
     print "Failed to retrieve latest docker-pi-hole release metadata"
 else
-    if [[ "${GIT_TAG}" == "${latest_tag}" ]] ; then
+    if [[ "${GIT_TAG_OR_BRANCH}" == "${latest_tag}" ]] ; then
         LATEST_IMAGE="${BASE_IMAGE}:latest"
     fi
 fi

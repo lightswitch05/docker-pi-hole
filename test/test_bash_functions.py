@@ -122,7 +122,6 @@ def test_DNS_Envs_are_secondary_to_setupvars(Docker, Slow, args_env, expected_st
     assert Docker.run('rm /.piholeFirstBoot').rc == 0
 
     # and a user already has custom pihole dns variables in setup vars
-    dns_count = 1
     setupVars = '/etc/pihole/setupVars.conf'
     Docker.run('sed -i "/^PIHOLE_DNS/ d" {}'.format(setupVars))
     Docker.run('echo "PIHOLE_DNS_1={}" | tee -a {}'.format(dns1, setupVars))
@@ -168,15 +167,14 @@ expected_debian_lines = [
 ])
 def test_debian_setup_php_env(Docker, expected_lines, repeat_function):
     ''' confirm all expected output is there and nothing else '''
-    stdout = ''
-    for i in range(repeat_function):
-        stdout = Docker.run('. /bash_functions.sh ; eval `grep setup_php_env /start.sh`').stdout
+    for _ in range(repeat_function):
+        Docker.run('. /bash_functions.sh ; eval `grep setup_php_env /start.sh`')
     for expected_line in expected_lines:
         search_config_cmd = "grep -c '{}' /etc/lighttpd/conf-enabled/15-fastcgi-php.conf".format(expected_line)
         search_config_count = Docker.run(search_config_cmd)
         found_lines = int(search_config_count.stdout.rstrip('\n'))
         if found_lines > 1:
-            assert False, "Found line {} times (more than once): {}".format(expected_line)
+            assert False, "Found line {} times (more than once): {}".format(expected_line, found_lines)
 
 
 def test_webPassword_random_generation(Docker):
