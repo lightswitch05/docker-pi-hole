@@ -1,7 +1,8 @@
 FROM python:3.8-buster
 
 # Only works for docker CLIENT (bind mounted socket)
-COPY --from=docker:18.09.3 /usr/local/bin/docker /usr/local/bin/
+COPY --from=docker:20.10 /usr/local/bin/docker /usr/local/bin/
+COPY --from=docker/buildx-bin:latest /buildx /usr/libexec/docker/cli-plugins/docker-buildx
 
 ARG packages
 RUN apt-get update && \
