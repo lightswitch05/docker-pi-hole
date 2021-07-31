@@ -18,8 +18,8 @@ jobs:
   test-and-build:
     runs-on: ubuntu-latest
     env:
-      ARCH: "amd64 armhf arm64 i386"
-      DEBIAN_VERSION: "stretch buster"
+      ARCH: "amd64"
+      DEBIAN_VERSION: "buster"
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
