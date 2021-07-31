@@ -54,15 +54,22 @@ def write_bake_config(archs: list, debian_version: str) -> None:
             raise ValueError(f'{arch} is not in the list of supported {ARCH_MAP}')
         platforms.append(ARCH_MAP[arch])
     with open(BAKE_CONFIG_FILE, 'w') as file:
-        file.write("target 'pihole-multiarch' {\n")
-        file.write(f"     platforms = {platforms}\n")
-        file.write(f"     tags = {get_image_tags(archs, debian_version)}\n")
+        platforms_str = str(platforms).replace("'", '"')
+        tags_str = str(get_image_tags(archs, debian_version)).replace("'", '"')
+        file.write('target "pihole-multiarch" {\n')
+        file.write(f"     platforms = {platforms_str}\n")
+        file.write(f"     tags = {tags_str}\n")
+        file.write("      args = {\n")
+        file.write(f'          PIHOLE_BASE = "debian:{debian_version}-slim"\n')
+        file.write("      }\n")
         file.write("}\n\n")
         for arch in archs:
-            file.write(f"target 'pihole-{arch}-{debian_version}' {{\n")
-            file.write("     inherits = ['pihole-multiarch']\n")
-            file.write(f"    tags = {get_image_tags(archs, debian_version)}\n")
-            file.write(f"     platforms = [{arch}]\n")
+            platform = ARCH_MAP[arch]
+            tags_str = str(get_image_tags([arch], debian_version)).replace("'", '"')
+            file.write(f'target "pihole-{arch}-{debian_version}" {{\n')
+            file.write('     inherits = ["pihole-multiarch"]\n')
+            file.write(f"    tags = {tags_str}\n")
+            file.write(f'    platforms = ["{platform}"]\n')
             file.write("}\n\n")
 
 
@@ -126,8 +133,9 @@ def build(docker_repo: str, debian_version: str, show_time: bool, no_cache: bool
     build_env['DEBIAN_VERSION'] = debian_version
     write_bake_config(BUILD_VARS['archs'], debian_version)
     run_and_stream_command_output('docker buildx create --use', build_env, verbose)
-    build_command = f'{time_arg} docker buildx bake --file build.yml --file {BAKE_CONFIG_FILE} {cache_arg} --print --push pihole-local'
     print(f' ::: Building {create_tag}')
+    build_command = f'{time_arg} docker buildx bake --file build.yml --file {BAKE_CONFIG_FILE} {cache_arg} --push'
+    run_and_stream_command_output(build_command + ' --print', build_env, verbose)
     success = run_and_stream_command_output(build_command, build_env, verbose)
     if verbose:
         print(build_command, '\n')
