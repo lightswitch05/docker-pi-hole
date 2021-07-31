@@ -101,7 +101,7 @@ def build_dockerfiles(args) -> bool:
         print(" ::: Skipping Dockerfile building")
         return all_success
 
-    run_and_stream_command_output('docker buildx create --use', [], True)
+    run_and_stream_command_output('docker buildx create --use --name pihole-build', os.environ.copy(), True)
     for debian_version in BUILD_VARS['debian_versions']:
         all_success = build('pihole', debian_version, args['-t'], args['--no-cache'], args['-v']) and all_success
         if not all_success and args['--fail-fast']:
@@ -109,7 +109,7 @@ def build_dockerfiles(args) -> bool:
     return all_success
 
 
-def run_and_stream_command_output(command, environment_vars, verbose) -> bool:
+def run_and_stream_command_output(command: str, environment_vars: dict, verbose: bool) -> bool:
     print("Running", command)
     build_result = subprocess.Popen(command.split(), env=environment_vars, stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True)
@@ -134,7 +134,7 @@ def build(docker_repo: str, debian_version: str, show_time: bool, no_cache: bool
     build_env['DEBIAN_VERSION'] = debian_version
     write_bake_config(BUILD_VARS['archs'], debian_version)
     print(f' ::: Building {create_tag}')
-    build_command = f'{time_arg} docker buildx bake --file build.yml --file {BAKE_CONFIG_FILE} {cache_arg} --push'
+    build_command = f'{time_arg} docker buildx bake --file build.yml --file {BAKE_CONFIG_FILE} {cache_arg}'
     run_and_stream_command_output(build_command + ' --print', build_env, verbose)
     success = run_and_stream_command_output(build_command, build_env, verbose)
     if verbose:

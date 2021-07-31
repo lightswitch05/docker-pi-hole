@@ -18,7 +18,7 @@ jobs:
   test-and-build:
     runs-on: ubuntu-latest
     env:
-      ARCH: "amd64"
+      ARCH: "amd64 arm64"
       DEBIAN_VERSION: "buster"
     steps:
       - name: Checkout Repo
@@ -28,3 +28,6 @@ jobs:
           echo "${{ secrets.DOCKERHUB_PASS }}" | docker login --username="${{ secrets.DOCKERHUB_USER }}" --password-stdin
           ./gh-actions-vars.sh
           ./gh-actions-test.sh
+          docker buildx ls
+          docker buildx use pihole-build
+          docker buildx inspect
