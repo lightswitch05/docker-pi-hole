@@ -29,8 +29,10 @@ jobs:
       #   uses: docker/setup-buildx-action@v1
       - name: Build images
         run: |
-          echo "${{ secrets.DOCKERHUB_PASS }}" | docker login --username="${{ secrets.DOCKERHUB_USER }}" --password-stdin
-          ./gh-actions-test.sh
-          docker buildx ls
-          docker buildx inspect
-          docker images
+            docker --version
+        # run: |
+        #   echo "${{ secrets.DOCKERHUB_PASS }}" | docker login --username="${{ secrets.DOCKERHUB_USER }}" --password-stdin
+        #   ./gh-actions-test.sh
+        #   docker buildx ls
+        #   docker buildx inspect
+        #   docker images
