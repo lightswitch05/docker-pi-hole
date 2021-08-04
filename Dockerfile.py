@@ -101,7 +101,7 @@ def build_dockerfiles(args) -> bool:
         print(" ::: Skipping Dockerfile building")
         return all_success
 
-    run_and_stream_command_output('docker buildx create --use --name pihole-build', os.environ.copy(), True)
+    run_and_stream_command_output('docker buildx create --use --name pihole-build --local', os.environ.copy(), True)
     for debian_version in BUILD_VARS['debian_versions']:
         all_success = build('pihole', debian_version, args['-t'], args['--no-cache'], args['-v']) and all_success
         if not all_success and args['--fail-fast']:

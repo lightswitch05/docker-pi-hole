@@ -30,7 +30,7 @@ jobs:
       - name: Build images
         run: |
           echo "${{ secrets.DOCKERHUB_PASS }}" | docker login --username="${{ secrets.DOCKERHUB_USER }}" --password-stdin
-          ./gh-actions-vars.sh
           ./gh-actions-test.sh
           docker buildx ls
           docker buildx inspect
+          docker images
