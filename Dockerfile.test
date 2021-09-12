@@ -1,0 +1,10 @@
+FROM python:3.9-bullseye
+
+COPY --from=docker:20.10 /usr/local/bin/docker /usr/local/bin/
+COPY --from=docker/buildx-bin:0.6.2 /buildx /usr/libexec/docker/cli-plugins/docker-buildx
+COPY requirements.txt /tmp/requirements.txt
+RUN apt-get update \
+    && apt-get install -y python3-pip curl \
+    && pip3 install -r /tmp/requirements.txt
+
+WORKDIR /opt/docker-pi-hole

@@ -5,9 +5,8 @@ ARG PIHOLE_ARCH
 ENV PIHOLE_ARCH "${PIHOLE_ARCH}"
 ARG PIHOLE_TAG
 ENV PIHOLE_TAG "${PIHOLE_TAG}"
-ARG S6_ARCH
-ARG S6_VERSION
-ENV S6OVERLAY_RELEASE "https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-${S6_ARCH}.tar.gz"
+ARG S6_VERSION="v2.1.0.2"
+ENV S6_VERSION "${S6_VERSION}"
 
 COPY install.sh /usr/local/bin/install.sh
 COPY VERSIONS /etc/pi-hole-versions

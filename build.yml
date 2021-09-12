@@ -1,59 +1,12 @@
-# Docker Compose build file: docker-compose -f build.yml build
+# Docker Compose build file: docker-compose -f build.yml build_tools
 version: "3.7"
 
-x-common-args: &common-args
-  PIHOLE_VERSION: ${PIHOLE_VERSION}
-  PIHOLE_TAG: ${PIHOLE_TAG}
-  NAME: pihole/pihole
-  MAINTAINER: adam@diginc.us
-  S6_VERSION: v2.1.0.2
-  PHP_ENV_CONFIG: /etc/lighttpd/conf-enabled/15-fastcgi-php.conf
-  PHP_ERROR_LOG: /var/log/lighttpd/error.log
-
-
 services:
-  amd64:
-    image: pihole:${PIHOLE_VERSION}-amd64-${DEBIAN_VERSION:-buster}
+  build_tools:
     build:
+      dockerfile: Dockerfile.test
       context: .
-      args:
-        <<: *common-args
-        PIHOLE_BASE: pihole/debian-base:${DEBIAN_VERSION:-buster}
-        PIHOLE_ARCH: amd64
-        S6_ARCH: amd64
-  armel:
-    image: pihole:${PIHOLE_VERSION}-armel-${DEBIAN_VERSION:-buster}
-    build:
-      context: .
-      args:
-        <<: *common-args
-        PIHOLE_BASE: pihole/debian-debootstrap:armel-${DEBIAN_VERSION:-buster}-slim
-        PIHOLE_ARCH: armel
-        S6_ARCH: arm
-  armhf:
-    image: pihole:${PIHOLE_VERSION}-armhf-${DEBIAN_VERSION:-buster}
-    build:
-      context: .
-      args:
-        <<: *common-args
-        PIHOLE_BASE: pihole/debian-debootstrap:armhf-${DEBIAN_VERSION:-buster}-slim
-        PIHOLE_ARCH: arm
-        S6_ARCH: arm
-  arm64:
-    image: pihole:${PIHOLE_VERSION}-arm64-${DEBIAN_VERSION:-buster}
-    build:
-      context: .
-      args:
-        <<: *common-args
-        PIHOLE_BASE: pihole/debian-debootstrap:arm64-${DEBIAN_VERSION:-buster}-slim
-        PIHOLE_ARCH: arm64
-        S6_ARCH: aarch64
-  i386:
-    image: pihole:${PIHOLE_VERSION}-i386-${DEBIAN_VERSION:-buster}
-    build:
-      context: .
-      args:
-        <<: *common-args
-        PIHOLE_BASE: pihole/debian-debootstrap:i386-${DEBIAN_VERSION:-buster}-slim
-        PIHOLE_ARCH: i386
-        S6_ARCH: x86
+    volumes:
+      - ./:/opt/docker-pi-hole
+      - /var/run/docker.sock:/var/run/docker.sock
+    entrypoint: /opt/docker-pi-hole/build_tools.py

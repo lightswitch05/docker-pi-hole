@@ -28,6 +28,12 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          driver-opts: network=host
       - name: Run Tests
         run: |
           echo "Building ${ARCH}-${DEBIAN_VERSION}"

@@ -20,9 +20,9 @@ def test_IPv6_not_True_removes_ipv6(Docker, Slow, test_args, expected_ipv6, expe
     if expected_stdout == 'IPv4':
         assert 'IPv6' not in function.stdout
     # On overlay2(?) docker sometimes writes to disk are slow enough to break some tests...
-    expected_ipv6_check = lambda: (\
-        IPV6_LINE in Docker.run('grep \'use-ipv6.pl\' {}'.format(WEB_CONFIG)).stdout
-    ) == expected_ipv6
+    expected_ipv6_check = lambda: ( \
+                                              IPV6_LINE in Docker.run('grep \'use-ipv6.pl\' {}'.format(WEB_CONFIG)).stdout
+                                  ) == expected_ipv6
     Slow(expected_ipv6_check)
 
 
@@ -140,7 +140,7 @@ def test_DNS_Envs_are_secondary_to_setupvars(Docker, Slow, args_env, expected_st
     if dns2:
         expected_servers.append('server={}'.format(dns2))
     Slow(lambda: Docker.run('grep "^server=[^/]" /etc/dnsmasq.d/01-pihole.conf').stdout.strip().split('\n') == \
-         expected_servers)
+                 expected_servers)
 
 
 @pytest.mark.parametrize('args_env, expected_stdout, expected_config_line', [

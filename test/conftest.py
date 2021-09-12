@@ -17,7 +17,7 @@ def read_pihole_versions():
     global FTL_VERSION
     dotdot = os.path.abspath(os.path.join(os.path.abspath(__file__), os.pardir, os.pardir))
     config = dotenv_values('{}/VERSIONS'.format(dotdot))
-    FTL_VERSION = config['FTL_VERSION'].replace('/','-')
+    FTL_VERSION = config['FTL_VERSION'].replace('/', '-')
 
 
 @pytest.fixture()
@@ -59,8 +59,8 @@ def DockerGeneric(request, _test_args, _args, _image, _cmd, _entrypoint):
     #assert 'docker' in check_output('id'), "Are you in the docker group?"
     # Always appended PYTEST arg to tell pihole we're testing
     if 'pihole' in _image and 'PYTEST=1' not in _args:
-       _args = '{} -e PYTEST=1'.format(_args)
-    docker_run = 'docker run -d -t {args} {test_args} {entry} {image} {cmd}'\
+        _args = '{} -e PYTEST=1'.format(_args)
+    docker_run = 'docker run -d -t {args} {test_args} {entry} {image} {cmd}' \
         .format(args=_args, test_args=_test_args, entry=_entrypoint, image=_image, cmd=_cmd)
     # Print a human runable version of the container run command for faster debugging
     print(docker_run.replace('-d -t', '--rm -it').replace('tail -f /dev/null', 'bash'))
@@ -80,6 +80,7 @@ def DockerGeneric(request, _test_args, _args, _image, _cmd, _entrypoint):
 @pytest.fixture
 def Docker(request, test_args, args, image, cmd, entrypoint):
     ''' One-off Docker container run '''
+    print("RUNNING IMAGE: " + image)
     return DockerGeneric(request, test_args, args, image, cmd, entrypoint)
 
 @pytest.fixture(scope='module')
@@ -109,7 +110,7 @@ def debian_version():
 
 @pytest.fixture()
 def tag(version, arch, debian_version):
-    return '{}-{}-{}'.format(version, arch, debian_version)
+    return 'feature-buildx-multi-arch-amd64'
 
 @pytest.fixture
 def webserver(tag):
