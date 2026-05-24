@@ -13,6 +13,12 @@ docker-compose.yml
 etc-dnsmasq.d/
 etc-pihole/
 var-log/
+.vscode/
+.pytest_cache/
+test/libs/
 
 # WIP/test stuff
 doco.yml
+
+# Ignore FTL Binary if it exists
+src/pihole-FTL

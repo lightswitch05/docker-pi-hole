@@ -2,6 +2,21 @@ version: 2
 updates:
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
-    directory: "/"
+    directories:
+      - "/"
     schedule:
       interval: "weekly"
+      day: saturday
+      time: "10:00"
+    groups:
+      github_action-dependencies:
+        patterns:
+          - "*"
+    target-branch: development
+  - package-ecosystem: "docker"
+    directory: "/src/"
+    schedule:
+      interval: "weekly"
+      day: saturday
+      time: "10:00"
+    target-branch: development
